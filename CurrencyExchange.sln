@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyExchange.Entities",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyExchange.Repository", "CurrencyExchange.Repository\CurrencyExchange.Repository.csproj", "{36A9243F-A460-4A09-8294-2AE2A9415363}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyExchange.Test", "CurrencyExchange.Test\CurrencyExchange.Test.csproj", "{AA7262FA-39E9-4EAF-866A-B71773A888FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{36A9243F-A460-4A09-8294-2AE2A9415363}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36A9243F-A460-4A09-8294-2AE2A9415363}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36A9243F-A460-4A09-8294-2AE2A9415363}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA7262FA-39E9-4EAF-866A-B71773A888FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA7262FA-39E9-4EAF-866A-B71773A888FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA7262FA-39E9-4EAF-866A-B71773A888FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA7262FA-39E9-4EAF-866A-B71773A888FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
