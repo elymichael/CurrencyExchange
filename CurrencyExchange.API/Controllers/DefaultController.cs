@@ -1,45 +1,126 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-
-namespace CurrencyExchange.API.Controllers
+﻿namespace CurrencyExchange.API.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using CurrencyExchange.API.Constants;
+    using CurrencyExchange.API.model;
+    using CurrencyExchange.API.services;
+    using CurrencyExchange.Entities;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
+
     [Route("api/[controller]")]
     [ApiController]
-    public class DefaultController : ControllerBase
+    public class DefaultController : BaseController
     {
-        // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        private IRequest _request;
+        private ICurrencyRate _currencyRate;
+        public DefaultController(
+            IOptions<Configuration> accessor,
+            IRequest request,
+            ICurrencyRate currencyRate,
+            IUnitOfWork unitOfWork) : base(accessor, unitOfWork)
         {
-            return new string[] { "value1", "value2" };
+            _request = request;
+            _currencyRate = currencyRate;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpGet("{code}")]
+        public ActionResult<double> GetExchangeRate(string code)
         {
-            return "value";
+            double rate = GetCurrencyRate(code);
+
+            if (rate < 0) {
+                return BadRequest($"The ISO Code provided [{code}] is not supported for this API.");
+            }
+
+            if (rate == 0) {
+                return BadRequest("An unexpected error was found in the request.");
+            }
+
+            return rate;
         }
 
-        // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Save(CurrencyTransaction data)
         {
+            if (!ModelState.IsValid) {
+                return BadRequest("Some information are invalid");
+            }
+
+            if (!_unitOfWork.RateTransactions.IsUserRegistered(data.UserID))
+            {
+                return BadRequest("Invalid UserID");
+            }
+
+            var maxRate = _unitOfWork.RateTransactions.GetMaxRateSupported(data.UserID, data.CurrencyCode, DateTime.Now.ToString("yyyyMM"));
+            if(maxRate < 0)
+            {
+                return BadRequest($"Transaction not supported for this Code {data.CurrencyCode} in this period.");
+            }
+
+            if(data.Amount > maxRate) {
+                return BadRequest($"The limit in {data.CurrencyCode} is {maxRate}.");
+            }
+
+            var currency = GetCurrencySetting(data.CurrencyCode);
+
+            double rate = GetCurrencyRate(data.CurrencyCode);
+
+            if(rate < 0) {
+                return BadRequest($"The ISO Code provided [{data.CurrencyCode}] is not supported for this API.");
+            }
+
+            if(rate == 0) {
+                return BadRequest("An unexpected error was found in the request.");
+            }
+            
+            Currency model = new Currency
+            {
+                UserID = data.UserID,
+                Amount = data.Amount,
+                Rate = rate,
+                CurrencyCode = data.CurrencyCode,
+                Total = data.Amount * rate
+            };
+
+            _unitOfWork.Currencies.Add(model);
+            _unitOfWork.Complete();
+            return Ok();
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpGet]
+        public ActionResult<IEnumerable<Currency>> GetAll()
         {
+            var result = _unitOfWork.Currencies.GetAll();
+            return Ok(result);
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        private double GetCurrencyRate(string code)
         {
+            try { 
+            var currency = GetCurrencySetting(code);
+            if (currency == null)
+            {
+                return -1;
+            }
+
+            double fakeValue = currency.FakeValue;
+            if (string.IsNullOrEmpty(currency.ApiUrl))
+                currency = GetCurrencySetting(ApiConstants.DEFAULT_CODE_ISO);
+
+            var result = _currencyRate.GetRateExchange(_request, code, currency.ApiUrl).Result;
+            result /= fakeValue;
+
+            return result;
+            }
+            catch (Exception ex)
+            {
+                SaveError(ex, "GetCurrencyRate");
+                return 0;
+            }
         }
     }
 }

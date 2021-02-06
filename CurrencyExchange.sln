@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyExchange.API", "CurrencyExchange.API\CurrencyExchange.API.csproj", "{AD4CABD0-1FFA-4D9B-90A4-A5DCC6C84872}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyExchange.Entities", "CurrencyExchange.Entities\CurrencyExchange.Entities.csproj", "{C3CB59D9-A825-46A5-AA10-71B18193D689}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyExchange.Repository", "CurrencyExchange.Repository\CurrencyExchange.Repository.csproj", "{36A9243F-A460-4A09-8294-2AE2A9415363}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{AD4CABD0-1FFA-4D9B-90A4-A5DCC6C84872}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD4CABD0-1FFA-4D9B-90A4-A5DCC6C84872}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD4CABD0-1FFA-4D9B-90A4-A5DCC6C84872}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3CB59D9-A825-46A5-AA10-71B18193D689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3CB59D9-A825-46A5-AA10-71B18193D689}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3CB59D9-A825-46A5-AA10-71B18193D689}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3CB59D9-A825-46A5-AA10-71B18193D689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36A9243F-A460-4A09-8294-2AE2A9415363}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36A9243F-A460-4A09-8294-2AE2A9415363}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36A9243F-A460-4A09-8294-2AE2A9415363}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36A9243F-A460-4A09-8294-2AE2A9415363}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
