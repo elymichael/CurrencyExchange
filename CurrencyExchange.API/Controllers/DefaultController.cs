@@ -61,12 +61,6 @@
                 return BadRequest($"Transaction not supported for this Code {data.CurrencyCode} in this period.");
             }
 
-            if(data.Amount > maxRate) {
-                return BadRequest($"The limit in {data.CurrencyCode} is {maxRate}.");
-            }
-
-            var currency = GetCurrencySetting(data.CurrencyCode);
-
             double rate = GetCurrencyRate(data.CurrencyCode);
 
             if(rate < 0) {
@@ -76,19 +70,26 @@
             if(rate == 0) {
                 return BadRequest("An unexpected error was found in the request.");
             }
-            
+
+            double exchange = data.Amount / rate;
+
+            if (exchange > maxRate)
+            {
+                return BadRequest($"The limit in {data.CurrencyCode} is {maxRate}.");
+            }
+
             Currency model = new Currency
             {
                 UserID = data.UserID,
                 Amount = data.Amount,
                 Rate = rate,
                 CurrencyCode = data.CurrencyCode,
-                Total = data.Amount * rate
+                Total = exchange
             };
 
             _unitOfWork.Currencies.Add(model);
             _unitOfWork.Complete();
-            return Ok();
+            return Ok(exchange.ToString("#,###.##"));
         }
 
         [HttpGet]
